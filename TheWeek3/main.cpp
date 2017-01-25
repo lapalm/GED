@@ -13,6 +13,7 @@ using std::cin;
 // Abstract base class: no implementation
 class AbstractNPC {
 public:
+	virtual ~AbstractNPC() {};
 	virtual void render() = 0;
 	virtual int getMana() = 0;
 	virtual int getHealth() = 0;
@@ -27,6 +28,7 @@ private:
 public:
 	NPC(string basename, int mana, int health) { name.assign(basename); this->mana = mana; this->health = health;} // assign is a string function
 	NPC(char * basename, int mana, int health) { name.assign(basename); this->mana = mana; this->health = health; } // to set string contents
+	virtual ~NPC() { cout << "Deleting NPC Object: "+ name << endl; };
 	void render() { cout << name; };
 	int getMana();
 	int getHealth();
@@ -39,6 +41,7 @@ private:
 	int health, mana;
 public:
 	NPCDecorator(AbstractNPC *n) { npc = n; }
+	virtual ~NPCDecorator() { delete npc; };
 	void render() { npc->render(); } // delegate render to npc data member
 	int getMana() { return npc->getMana(); };
 	int getHealth() { return npc->getHealth(); };
@@ -48,6 +51,7 @@ public:
 class Elite : public NPCDecorator {
 public:
 	Elite(AbstractNPC *n) : NPCDecorator(n) { }
+	virtual ~Elite() { cout << "Deleting Elite Decorator" << endl; };
 	void render() {
 		cout << "Elite "; // render special features
 		NPCDecorator::render(); // delegate to base class
@@ -65,6 +69,7 @@ public:
 class Captain : public NPCDecorator {
 public:
 	Captain(AbstractNPC *n) : NPCDecorator(n) { }
+	virtual ~Captain() { cout << "Deleting Captain Decorator" << endl; };
 	void render() {
 		cout << "Captain "; // render special features
 		NPCDecorator::render(); // delegate to base class
@@ -82,6 +87,7 @@ public:
 class Shaman : public NPCDecorator {
 public:
 	Shaman(AbstractNPC *n) : NPCDecorator(n) { }
+	virtual ~Shaman() { cout << "Deleting Shaman Decorator" << endl; };
 	void render() {
 		NPCDecorator::render(); // delegate to base class
 		cout << " Shaman "; // render special features *after* base
@@ -168,6 +174,11 @@ int main(int argc, char **argv)
 		cout << " Health: "<< monsterArray[i]->getHealth();
 		cout << " Mana: " << monsterArray[i]->getMana();
 		cout << endl;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		cout << endl;
+		delete monsterArray[i];
 	}
 
 	cin.get();
