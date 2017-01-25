@@ -1,5 +1,7 @@
 #include <string>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 // Instead of importing the entire std namespace, we can be
 // specific about which std library classes and objects are to be included:
 using std::string;
@@ -96,26 +98,77 @@ public:
 // Program entry point
 int main(int argc, char **argv)
 {
-	AbstractNPC *goblin1 = new Elite(new Shaman(new NPC("Goblin", 25, 25)));
-	AbstractNPC *orc1 = new Elite(new Captain(new NPC("Orc", 10, 40)));
-	AbstractNPC *orc2 = new Elite(new NPC("Orc", 10, 40));
-	AbstractNPC *troll1 = new Shaman(new NPC("Troll",10, 100));
-	AbstractNPC *bandit1 = new Elite(new NPC("Bandit", 10 ,30));
-	AbstractNPC *brigand1 = new Captain(new NPC("Brigand", 20 ,50));
-	goblin1->render(); cout << " Health: " << goblin1->getHealth() << " Mana: " << goblin1->getMana(); cout << endl;
-	orc1->render(); cout << " Health: " << orc1->getHealth() << " Mana: " << orc1->getMana(); cout << endl;
-	orc2->render(); cout << " Health: " << orc2->getHealth() << " Mana: " << orc2->getMana(); cout << endl;
-	troll1->render(); cout << " Health: " << troll1->getHealth() << " Mana: " << troll1->getMana(); cout << endl;
-	bandit1->render(); cout << " Health: " << bandit1->getHealth() << " Mana: " << bandit1->getMana(); cout << endl;
-	brigand1->render(); cout << " Health: " << brigand1->getHealth() << " Mana: " << brigand1->getMana(); cout << endl;
+	srand(time(NULL));
+	AbstractNPC *monsterArray[10];
+	int r;
+	for (int i = 0; i < 10; i++) {
+		r = rand() % 6;
+		NPC *base;
+		switch (r) {
+		case 0:
+			base = new NPC("Ork", 10, 40);
+			break;
+		case 1:
+			base = new NPC("Goblim", 25, 25);
+			break;
+		case 2:
+			base = new NPC("Troll", 10, 100);
+			break;
+		case 3:
+			base = new NPC("Bandit", 10, 30);
+			break;
+		case 4:
+			base = new NPC("Brigand", 20, 50);
+			break;
+		case 5:
+			base = new NPC("Master of All things Breaker of none ", 1500000, 15000000);
+			break;
+		default:
+			base = new NPC("Its a you", 0, 1);
+			break;
+		}
 
+		r = rand() % 3;
+		AbstractNPC *firstClass;
+		switch(r) {
+		case 0:
+			firstClass = new Elite(base);
+			break;
+		case 1:
+			firstClass = new Shaman(base);
+			break;
+		case 2:
+			firstClass = new Captain(base);
+			break;
+		}
+		r = rand() % 2;
+		if (r == 1) {
+			AbstractNPC *secondClass;
+			switch (r) {
+			case 0:
+				secondClass = new Elite(firstClass);
+				break;
+			case 1:
+				secondClass = new Shaman(firstClass);
+				break;
+			case 2:
+				secondClass = new Captain(firstClass);
+				break;
+			}
 
-	delete goblin1;
-	delete orc1;
-	delete orc2;
-	delete troll1;
-	delete bandit1;
-	delete brigand1;
+			monsterArray[i] = secondClass;
+		}
+		else {
+			monsterArray[i] = firstClass;
+		}
+		
+	}
+	for (int i = 0; i < 10; i++) {
+		monsterArray[i]->render();
+		cout << " Health: "<< monsterArray[i]->getHealth();
+		cout << " Mana: " << monsterArray[i]->getMana();
+		cout << endl;
+	}
 
 	cin.get();
 	return 0;
